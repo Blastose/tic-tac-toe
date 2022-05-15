@@ -1,5 +1,5 @@
 const gameBoardFactory = (numTiles) => {
-  const _board = [...Array(numTiles)].map(() => Array(numTiles));
+  let _board = [...Array(numTiles)].map(() => Array(numTiles));
 
   const getBoard = () => {
     return _board;
@@ -27,11 +27,16 @@ const gameBoardFactory = (numTiles) => {
     }
   };
 
+  const clearBoard = () => {
+    _board = [...Array(numTiles)].map(() => Array(numTiles));
+  };
+
   return {
     getBoard,
     placePiece,
     tileOccupied,
-    fillBoard
+    fillBoard,
+    clearBoard
   };
 };
 
@@ -46,15 +51,31 @@ const dom = (() => {
   const _modal = document.querySelector('.modal');
   const _modalText = document.querySelector('.modal-text');
   const _closeModalButton = document.querySelector('.close-modal');
+  const _returnToStartButton = document.querySelector('.return-to-start');
+  const _restartGameButton = document.querySelector('.restart-game');
 
-  _startGameButton.addEventListener('click', () => {
-    _startScreen.classList.add('hide');
-    _game.classList.remove('hide');
-  });
+  const setStartGameEventListener = (func) => {
+    _startGameButton.addEventListener('click', () => {
+      _startScreen.classList.add('hide');
+      _game.classList.remove('hide');
+      func();
+    });
+  };
 
   _closeModalButton.addEventListener('click', () => {
     hideModal();
   });
+
+  _returnToStartButton.addEventListener('click', () => {
+    _startScreen.classList.remove('hide');
+    _game.classList.add('hide');
+  });
+
+  const setRestartGameEventListener = (func) => {
+    _restartGameButton.addEventListener('click', () => {
+      func();
+    });
+  };
 
   const setTileEventListener = (func) => {
     _tiles.forEach(tile => {
@@ -62,52 +83,61 @@ const dom = (() => {
         func({row: `${tile.getAttribute('data-row')}`, col: `${tile.getAttribute('data-col')}`});
       });
     });
-  } 
+  } ;
+
+  const clearAllTiles = () => {
+    _tiles.forEach(tile => {
+      tile.textContent = "_";
+    });
+  };
 
   const setTilePiece = (piece, location) => {
     const _tile = document.querySelector(`.tile[data-row="${location.row}"][data-col="${location.col}"]`);
     _tile.textContent = piece;
-  }
+  };
 
   const setCurrentTurnText = (text) => {
     _currentTurnName.textContent = text;
-  }
+  };
 
   const setCurrentTurnName = (name) => {
     setCurrentTurnText(`${name}'s turn`);
-  }
+  };
 
   const getPlayer1Name = () => {
     return _player1Name;
-  }
+  };
 
   const getPlayer2Name = () => {
     return _player2Name;
-  }
+  };
 
   const showModal = () => {
     _modal.classList.remove('hide');
-  }
+  };
 
   const hideModal = () => {
     _modal.classList.add('hide');
-  }
+  };
 
   const setModalWinnerText = (text) => {
     _modalText.textContent = text;
-  }
+  };
 
   const setModalWinnerName = (name) => {
     setModalWinnerText(`${name} wins!`);
-  }
+  };
 
   const setModalDraw = () => {
     _modalText.textContent = "It's a draw!";
-  }
+  };
 
   return {
+    setStartGameEventListener,
     setTilePiece,
     setTileEventListener,
+    clearAllTiles,
+    setRestartGameEventListener,
     setCurrentTurnText,
     setCurrentTurnName,
     getPlayer1Name,
@@ -128,10 +158,10 @@ const playerFactory = (name, piece) => {
   };
   const getPiece = () => {
     return _piece;
-  }
+  };
   const setName = (name) => {
     _name = name;
-  }
+  };
   return {
     getName,
     setName,
@@ -162,30 +192,35 @@ const game = ((gameBoard, dom, players) => {
 
       if (_checkWin(_players[_currentPlayer].getPiece())) {
         _gameboard.fillBoard("");
-        dom.setModalWinnerName(_players[_currentPlayer].getName());
-        dom.setCurrentTurnText(`${_players[_currentPlayer].getName()} wins!`);
-        dom.showModal();
+        _dom.setModalWinnerName(_players[_currentPlayer].getName());
+        _dom.setCurrentTurnText(`${_players[_currentPlayer].getName()} wins!`);
+        _dom.showModal();
       } else if (_placedPieces == 9) {
-        dom.setModalDraw();
-        dom.setCurrentTurnText("It's a draw!");
-        dom.showModal();
+        _dom.setModalDraw();
+        _dom.setCurrentTurnText("It's a draw!");
+        _dom.showModal();
       } else {
         console.log(_checkWin(_players[_currentPlayer].getPiece()));
         console.log(_gameboard.getBoard());
         _nextPlayer();
-        dom.setCurrentTurnName(_players[_currentPlayer].getName());
+        _dom.setCurrentTurnName(_players[_currentPlayer].getName());
       }
     }
   });
 
+
   const _nextPlayer = () => {
     _currentPlayer = (_currentPlayer + 1) % _players.length;
-  }
+  };
 
   const play = () => {
+    _currentPlayer = 0;
+    _placedPieces = 0;
     _players[0].setName(dom.getPlayer1Name().value || "Player 1");
     _players[1].setName(dom.getPlayer2Name().value || "Player 2");
-    dom.setCurrentTurnName(_players[_currentPlayer].getName());
+    _gameboard.clearBoard();
+    _dom.clearAllTiles();
+    _dom.setCurrentTurnName(_players[_currentPlayer].getName());
     console.log(_gameboard.getBoard());
   };
 
@@ -206,6 +241,10 @@ const game = ((gameBoard, dom, players) => {
       return false;
     }
   };
+
+  _dom.setStartGameEventListener(play);
+
+  _dom.setRestartGameEventListener(play);
 
   return {
     play
