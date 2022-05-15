@@ -1,0 +1,30 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+  height: 100vh;
+}
+
+.wrapper {
+  max-width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.game-board {
+  background-color: lightblue;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+
+  text-align: center;
+}
+
+.tile:hover {
+  background-color: rgb(210, 210, 255);
+}
