@@ -17,10 +17,21 @@ const gameBoardFactory = (numTiles) => {
     _board[location.row][location.col] = piece;
   };
 
+  const fillBoard = (piece) => {
+    for (let i = 0; i < numTiles; i++) {
+      for (let j = 0; j < numTiles; j++) {
+        if (_board[i][j] === undefined) {
+          _board[i][j] = piece;
+        }
+      }
+    }
+  };
+
   return {
     getBoard,
     placePiece,
-    tileOccupied
+    tileOccupied,
+    fillBoard
   };
 };
 
@@ -133,14 +144,15 @@ const game = ((gameBoard, dom, players) => {
       _dom.setTilePiece(_players[_currentPlayer].getPiece(), location);
       
       if (_checkWin(_players[_currentPlayer].getPiece())) {
+        _gameboard.fillBoard("");
         dom.setModalWinnerName(_players[_currentPlayer].getName());
         dom.showModal();
+      } else {
+        console.log(_checkWin(_players[_currentPlayer].getPiece()));
+        console.log(_gameboard.getBoard());
+        _nextPlayer();
+        dom.setCurrentTurnName(_players[_currentPlayer].getName());
       }
-
-      console.log(_checkWin(_players[_currentPlayer].getPiece()));
-      console.log(_gameboard.getBoard());
-      _nextPlayer();
-      dom.setCurrentTurnName(_players[_currentPlayer].getName());
     }
   });
 
