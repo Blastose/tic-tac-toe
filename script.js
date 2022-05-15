@@ -32,8 +32,8 @@ const dom = (() => {
   const _currentTurnName = document.querySelector('.current-turn');
   const _player1Name = document.querySelector('#player1-name');
   const _player2Name = document.querySelector('#player2-name');
-  const _winModal = document.querySelector('.win-modal');
-  const _modalWinnerName = document.querySelector('.modal-winner-name');
+  const _modal = document.querySelector('.modal');
+  const _modalText = document.querySelector('.modal-text');
   const _closeModalButton = document.querySelector('.close-modal');
 
   _startGameButton.addEventListener('click', () => {
@@ -42,7 +42,7 @@ const dom = (() => {
   });
 
   _closeModalButton.addEventListener('click', () => {
-    hideWinModal();
+    hideModal();
   });
 
   const setTileEventListener = (func) => {
@@ -70,16 +70,16 @@ const dom = (() => {
     return _player2Name;
   }
 
-  const showWinModal = () => {
-    _winModal.classList.remove('hide');
+  const showModal = () => {
+    _modal.classList.remove('hide');
   }
 
-  const hideWinModal = () => {
-    _winModal.classList.add('hide');
+  const hideModal = () => {
+    _modal.classList.add('hide');
   }
 
   const setModalWinnerName = (name) => {
-    _modalWinnerName.textContent = `${name} wins!`;
+    _modalText.textContent = `${name} wins!`;
   }
 
   return {
@@ -88,8 +88,8 @@ const dom = (() => {
     setCurrentTurnName,
     getPlayer1Name,
     getPlayer2Name,
-    showWinModal,
-    hideWinModal,
+    showModal,
+    hideModal,
     setModalWinnerName
   };
 })();
@@ -134,7 +134,7 @@ const game = ((gameBoard, dom, players) => {
       
       if (_checkWin(_players[_currentPlayer].getPiece())) {
         dom.setModalWinnerName(_players[_currentPlayer].getName());
-        dom.showWinModal();
+        dom.showModal();
       }
 
       console.log(_checkWin(_players[_currentPlayer].getPiece()));

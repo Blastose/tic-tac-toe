@@ -96,7 +96,7 @@ button.tile {
   background-color: rgb(210, 210, 255);
 }
 
-.win-modal {
+.modal {
   position: fixed;
   left: 0;
   top: 0;
