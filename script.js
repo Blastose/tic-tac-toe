@@ -25,18 +25,21 @@ const gameBoardFactory = (numTiles) => {
 };
 
 const dom = (() => {
-  const tiles = document.querySelectorAll('.tile');
-  const startScreen = document.querySelector('.start-screen');
-  const startGameButton = document.querySelector('.start-game');
-  const game = document.querySelector('.game');
+  const _tiles = document.querySelectorAll('.tile');
+  const _startScreen = document.querySelector('.start-screen');
+  const _startGameButton = document.querySelector('.start-game');
+  const _game = document.querySelector('.game');
+  const _currentTurnName = document.querySelector('.current-turn');
+  const _player1Name = document.querySelector('#player1-name');
+  const _player2Name = document.querySelector('#player2-name');
 
-  startGameButton.addEventListener('click', () => {
-    startScreen.classList.add('hide');
-    game.classList.remove('hide');
+  _startGameButton.addEventListener('click', () => {
+    _startScreen.classList.add('hide');
+    _game.classList.remove('hide');
   });
 
   const setTileEventListener = (func) => {
-    tiles.forEach(tile => {
+    _tiles.forEach(tile => {
       tile.addEventListener('click', () => {
         func({row: `${tile.getAttribute('data-row')}`, col: `${tile.getAttribute('data-col')}`});
       });
@@ -44,18 +47,33 @@ const dom = (() => {
   } 
 
   const setTilePiece = (piece, location) => {
-    const tile = document.querySelector(`.tile[data-row="${location.row}"][data-col="${location.col}"]`);
-    tile.textContent = piece;
+    const _tile = document.querySelector(`.tile[data-row="${location.row}"][data-col="${location.col}"]`);
+    _tile.textContent = piece;
+  }
+
+  const setCurrentTurnName = (name) => {
+    _currentTurnName.textContent = `${name}'s turn`;
+  }
+
+  const getPlayer1Name = () => {
+    return _player1Name;
+  }
+
+  const getPlayer2Name = () => {
+    return _player2Name;
   }
 
   return {
     setTilePiece,
-    setTileEventListener
+    setTileEventListener,
+    setCurrentTurnName,
+    getPlayer1Name,
+    getPlayer2Name
   };
 })();
 
 const playerFactory = (name, piece) => {
-  const _name = name;
+  let _name = name;
   const _piece = piece;
   const getName = () => {
     return _name;
@@ -63,14 +81,18 @@ const playerFactory = (name, piece) => {
   const getPiece = () => {
     return _piece;
   }
+  const setName = (name) => {
+    _name = name;
+  }
   return {
     getName,
+    setName,
     getPiece
   };
 };
 
-const player1 = playerFactory("jim", "x");
-const player2 = playerFactory("bob", "o");
+const player1 = playerFactory("", "x");
+const player2 = playerFactory("", "o");
 
 const gameBoard = gameBoardFactory(3);
 
@@ -91,6 +113,7 @@ const game = ((gameBoard, dom, players) => {
       console.log(_checkWin(_players[_currentPlayer].getPiece()));
       console.log(_gameboard.getBoard());
       _nextPlayer();
+      dom.setCurrentTurnName(_players[_currentPlayer].getName());
     }
   });
 
@@ -99,6 +122,9 @@ const game = ((gameBoard, dom, players) => {
   }
 
   const play = () => {
+    _players[0].setName(dom.getPlayer1Name().value);
+    _players[1].setName(dom.getPlayer2Name().value);
+    dom.setCurrentTurnName(_players[_currentPlayer].getName());
     console.log(_gameboard.getBoard());
   };
 
