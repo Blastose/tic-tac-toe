@@ -26,6 +26,14 @@ const gameBoardFactory = (numTiles) => {
 
 const dom = (() => {
   const tiles = document.querySelectorAll('.tile');
+  const startScreen = document.querySelector('.start-screen');
+  const startGameButton = document.querySelector('.start-game');
+  const game = document.querySelector('.game');
+
+  startGameButton.addEventListener('click', () => {
+    startScreen.classList.add('hide');
+    game.classList.remove('hide');
+  });
 
   const setTileEventListener = (func) => {
     tiles.forEach(tile => {

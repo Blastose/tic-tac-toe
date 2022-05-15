@@ -31,10 +31,19 @@ h2 {
   justify-content: center;
 }
 
+.player-name-input {
+  display: flex;
+  gap: 8px;
+}
+
 .start-screen {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 1fr 0.5fr;
+}
+
+.hide {
+  display: none;
 }
 
 .start {
@@ -44,6 +53,15 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.title-wrapper {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
 }
 
 .wrapper {
@@ -68,5 +86,12 @@ h2 {
 }
 
 @media only screen and (min-width: 800px) {
-  
+  .title-wrapper {
+    display: flex;
+    gap: 64px;
+  }
+
+  .start-screen {
+    grid-template-rows: 1fr 1fr 1fr;
+  }
 }
