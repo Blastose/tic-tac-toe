@@ -69,8 +69,12 @@ const dom = (() => {
     _tile.textContent = piece;
   }
 
+  const setCurrentTurnText = (text) => {
+    _currentTurnName.textContent = text;
+  }
+
   const setCurrentTurnName = (name) => {
-    _currentTurnName.textContent = `${name}'s turn`;
+    setCurrentTurnText(`${name}'s turn`);
   }
 
   const getPlayer1Name = () => {
@@ -89,19 +93,30 @@ const dom = (() => {
     _modal.classList.add('hide');
   }
 
+  const setModalWinnerText = (text) => {
+    _modalText.textContent = text;
+  }
+
   const setModalWinnerName = (name) => {
-    _modalText.textContent = `${name} wins!`;
+    setModalWinnerText(`${name} wins!`);
+  }
+
+  const setModalDraw = () => {
+    _modalText.textContent = "It's a draw!";
   }
 
   return {
     setTilePiece,
     setTileEventListener,
+    setCurrentTurnText,
     setCurrentTurnName,
     getPlayer1Name,
     getPlayer2Name,
     showModal,
     hideModal,
-    setModalWinnerName
+    setModalWinnerText,
+    setModalWinnerName,
+    setModalDraw
   };
 })();
 
@@ -134,6 +149,7 @@ const game = ((gameBoard, dom, players) => {
   const _dom = dom;
   const _players = players;
   let _currentPlayer = 0;
+  let _placedPieces = 0;
 
   console.log(players);
 
@@ -142,10 +158,16 @@ const game = ((gameBoard, dom, players) => {
     if (!_gameboard.tileOccupied(location)) {
       _gameboard.placePiece(_players[_currentPlayer].getPiece(), location);
       _dom.setTilePiece(_players[_currentPlayer].getPiece(), location);
-      
+      _placedPieces += 1;
+
       if (_checkWin(_players[_currentPlayer].getPiece())) {
         _gameboard.fillBoard("");
         dom.setModalWinnerName(_players[_currentPlayer].getName());
+        dom.setCurrentTurnText(`${_players[_currentPlayer].getName()} wins!`);
+        dom.showModal();
+      } else if (_placedPieces == 9) {
+        dom.setModalDraw();
+        dom.setCurrentTurnText("It's a draw!");
         dom.showModal();
       } else {
         console.log(_checkWin(_players[_currentPlayer].getPiece()));
