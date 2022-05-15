@@ -32,10 +32,17 @@ const dom = (() => {
   const _currentTurnName = document.querySelector('.current-turn');
   const _player1Name = document.querySelector('#player1-name');
   const _player2Name = document.querySelector('#player2-name');
+  const _winModal = document.querySelector('.win-modal');
+  const _modalWinnerName = document.querySelector('.modal-winner-name');
+  const _closeModalButton = document.querySelector('.close-modal');
 
   _startGameButton.addEventListener('click', () => {
     _startScreen.classList.add('hide');
     _game.classList.remove('hide');
+  });
+
+  _closeModalButton.addEventListener('click', () => {
+    hideWinModal();
   });
 
   const setTileEventListener = (func) => {
@@ -63,12 +70,27 @@ const dom = (() => {
     return _player2Name;
   }
 
+  const showWinModal = () => {
+    _winModal.classList.remove('hide');
+  }
+
+  const hideWinModal = () => {
+    _winModal.classList.add('hide');
+  }
+
+  const setModalWinnerName = (name) => {
+    _modalWinnerName.textContent = `${name} wins!`;
+  }
+
   return {
     setTilePiece,
     setTileEventListener,
     setCurrentTurnName,
     getPlayer1Name,
-    getPlayer2Name
+    getPlayer2Name,
+    showWinModal,
+    hideWinModal,
+    setModalWinnerName
   };
 })();
 
@@ -110,6 +132,11 @@ const game = ((gameBoard, dom, players) => {
       _gameboard.placePiece(_players[_currentPlayer].getPiece(), location);
       _dom.setTilePiece(_players[_currentPlayer].getPiece(), location);
       
+      if (_checkWin(_players[_currentPlayer].getPiece())) {
+        dom.setModalWinnerName(_players[_currentPlayer].getName());
+        dom.showWinModal();
+      }
+
       console.log(_checkWin(_players[_currentPlayer].getPiece()));
       console.log(_gameboard.getBoard());
       _nextPlayer();
@@ -122,8 +149,8 @@ const game = ((gameBoard, dom, players) => {
   }
 
   const play = () => {
-    _players[0].setName(dom.getPlayer1Name().value);
-    _players[1].setName(dom.getPlayer2Name().value);
+    _players[0].setName(dom.getPlayer1Name().value || "Player 1");
+    _players[1].setName(dom.getPlayer2Name().value || "Player 2");
     dom.setCurrentTurnName(_players[_currentPlayer].getName());
     console.log(_gameboard.getBoard());
   };
