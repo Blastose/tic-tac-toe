@@ -36,7 +36,7 @@ const dom = (() => {
   } 
 
   const setTilePiece = (piece, location) => {
-    const tile = document.querySelector(`div.tile[data-row="${location.row}"][data-col="${location.col}"]`);
+    const tile = document.querySelector(`.tile[data-row="${location.row}"][data-col="${location.col}"]`);
     tile.textContent = piece;
   }
 
@@ -45,47 +45,6 @@ const dom = (() => {
     setTileEventListener
   };
 })();
-
-const gameBoard = gameBoardFactory(3);
-const game = ((gameBoard, dom) => {
-  const _gameboard = gameBoard;
-  const _dom = dom;
-
-  _dom.setTileEventListener((location) => {
-    console.log(location);
-    if (!_gameboard.tileOccupied(location)) {
-      _gameboard.placePiece("x", location);
-      _dom.setTilePiece("x", location);
-    }
-    console.log(checkWin("x"));
-  });
-
-  const play = () => {
-    console.log(_gameboard);
-  };
-  const checkWin = (piece) => {
-    if (_gameboard.getBoard()[0][0] === piece && _gameboard.getBoard()[0][1] === piece && _gameboard.getBoard()[0][2] === piece
-      || _gameboard.getBoard()[1][0] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[1][2] === piece
-      || _gameboard.getBoard()[2][0] === piece && _gameboard.getBoard()[2][1] === piece && _gameboard.getBoard()[2][2] === piece
-      
-      || _gameboard.getBoard()[0][0] === piece && _gameboard.getBoard()[1][0] === piece && _gameboard.getBoard()[2][0] === piece
-      || _gameboard.getBoard()[0][1] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[2][1] === piece
-      || _gameboard.getBoard()[0][2] === piece && _gameboard.getBoard()[1][2] === piece && _gameboard.getBoard()[2][2] === piece
-      
-      || _gameboard.getBoard()[0][0] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[2][2] === piece
-      || _gameboard.getBoard()[2][0] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[0][2] === piece
-      ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  return {
-    play,
-    checkWin
-  };
-})(gameBoard, dom);
 
 const playerFactory = (name, piece) => {
   const _name = name;
@@ -102,7 +61,61 @@ const playerFactory = (name, piece) => {
   };
 };
 
-game.play();
-
 const player1 = playerFactory("jim", "x");
-console.log(player1.getName());
+const player2 = playerFactory("bob", "o");
+
+const gameBoard = gameBoardFactory(3);
+
+const game = ((gameBoard, dom, players) => {
+  const _gameboard = gameBoard;
+  const _dom = dom;
+  const _players = players;
+  let _currentPlayer = 0;
+
+  console.log(players);
+
+  _dom.setTileEventListener((location) => {
+    console.log(location);
+    if (!_gameboard.tileOccupied(location)) {
+      _gameboard.placePiece(_players[_currentPlayer].getPiece(), location);
+      _dom.setTilePiece(_players[_currentPlayer].getPiece(), location);
+      
+      console.log(_checkWin(_players[_currentPlayer].getPiece()));
+      console.log(_gameboard.getBoard());
+      _nextPlayer();
+    }
+  });
+
+  const _nextPlayer = () => {
+    _currentPlayer = (_currentPlayer + 1) % _players.length;
+  }
+
+  const play = () => {
+    console.log(_gameboard.getBoard());
+  };
+
+  const _checkWin = (piece) => {
+    if ((_gameboard.getBoard()[0][0] === piece && _gameboard.getBoard()[0][1] === piece && _gameboard.getBoard()[0][2] === piece)
+      || (_gameboard.getBoard()[1][0] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[1][2] === piece)
+      || (_gameboard.getBoard()[2][0] === piece && _gameboard.getBoard()[2][1] === piece && _gameboard.getBoard()[2][2] === piece)
+      
+      || (_gameboard.getBoard()[0][0] === piece && _gameboard.getBoard()[1][0] === piece && _gameboard.getBoard()[2][0] === piece)
+      || (_gameboard.getBoard()[0][1] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[2][1] === piece)
+      || (_gameboard.getBoard()[0][2] === piece && _gameboard.getBoard()[1][2] === piece && _gameboard.getBoard()[2][2] === piece)
+      
+      || (_gameboard.getBoard()[0][0] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[2][2] === piece)
+      || (_gameboard.getBoard()[2][0] === piece && _gameboard.getBoard()[1][1] === piece && _gameboard.getBoard()[0][2] === piece)
+      ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  return {
+    play
+  };
+
+})(gameBoard, dom, [player1, player2]);
+
+game.play();
