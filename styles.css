@@ -105,8 +105,21 @@ button.tile {
   cursor: pointer;
 }
 
+button {
+  all: unset;
+  border-radius: 6px;
+  border: 1px solid black;
+  padding: 3px 12px;
+  cursor: pointer;
+  background-color: white;
+}
+
+button:hover {
+  background-color: rgb(231, 243, 255);
+}
+
 .tile:hover {
-  background-color: rgb(210, 210, 255);
+  background-color: rgb(231, 243, 255);
 }
 
 .board-line {
@@ -152,7 +165,7 @@ button.tile {
 }
 
 .modal-content {
-  background-color: rgb(193, 212, 255);
+  background-color: rgb(202, 229, 255);
   padding: 32px;
   border-radius: 16px;
   transition-duration: 0.2s;
