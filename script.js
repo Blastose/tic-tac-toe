@@ -87,7 +87,7 @@ const dom = (() => {
 
   const clearAllTiles = () => {
     _tiles.forEach(tile => {
-      tile.textContent = "_";
+      tile.textContent = "";
     });
   };
 
@@ -169,8 +169,8 @@ const playerFactory = (name, piece) => {
   };
 };
 
-const player1 = playerFactory("", "x");
-const player2 = playerFactory("", "o");
+const player1 = playerFactory("", "X");
+const player2 = playerFactory("", "O");
 
 const gameBoard = gameBoardFactory(3);
 
